@@ -1,17 +1,18 @@
 import React, { Fragment, useState } from 'react';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
+import PropTypes from 'prop-types';
 
-const Form = () => {
+const Form = ({ makeCite }) => {
 
-    const [cite, setCite ] = useState({
-        pet:'',
-        owner:'',
-        date:'',
-        time:'',
-        symptom:'',
+    const [cite, setCite] = useState({
+        pet: '',
+        owner: '',
+        date: '',
+        time: '',
+        symptom: '',
     })
 
-    const [error, setError ] = useState(false)
+    const [error, setError] = useState(false)
 
     const handleChange = e => {
         setCite({
@@ -20,27 +21,33 @@ const Form = () => {
         })
     }
 
-    const { pet , owner, date, time , symptom } = cite;
+    const { pet, owner, date, time, symptom } = cite;
 
     const submitCite = e => {
         e.preventDefault();
 
         //Validar
-        if(pet.trim() === '' || owner.trim() === '' || date.trim() === '' || time.trim() === '' || symptom.trim() === ''){
+        if (pet.trim() === '' || owner.trim() === '' || date.trim() === '' || time.trim() === '' || symptom.trim() === '') {
             setError(true);
             return
         }
         //eliminar mensaje
         setError(false);
-       
+
         //Asignar una ID
-        cite.id = uuid();
-        console.log(cite);
+        cite.id = uuidv4();
 
         //crear la cita
+        makeCite(cite)
 
         //Reiniciar el form
-
+        setCite({
+            pet: '',
+            owner: '',
+            date: '',
+            time: '',
+            symptom: '',
+        })
     }
 
     return (
@@ -49,14 +56,14 @@ const Form = () => {
 
             {error
 
-            ?
-            <p className='alert-error'>Todos los campos son obligatorios</p>
-            :
-            null
+                ?
+                <p className='alert-error'>Todos los campos son obligatorios</p>
+                :
+                null
             }
 
             <form
-            onSubmit = {submitCite}
+                onSubmit={submitCite}
             >
                 <label>Nombre de Mascota</label>
                 <input
@@ -64,35 +71,35 @@ const Form = () => {
                     name="pet"
                     className="u-full-width"
                     placeholder="Nombre de Mascota"
-                    onChange= {handleChange}
+                    onChange={handleChange}
                 />
-                 <label>Nombre de Dueño</label>
+                <label>Nombre de Dueño</label>
                 <input
                     type="text"
                     name="owner"
                     className="u-full-width"
                     placeholder="Nombre de Dueño"
-                    onChange= {handleChange}
+                    onChange={handleChange}
                 />
                 <label>Fecha</label>
                 <input
                     type="date"
                     name="date"
                     className="u-full-width"
-                    onChange= {handleChange}
+                    onChange={handleChange}
                 />
                 <label>Hora</label>
                 <input
                     type="time"
                     name="time"
                     className="u-full-width"
-                    onChange= {handleChange}
+                    onChange={handleChange}
                 />
                 <label>Síntomas</label>
                 <textarea
                     name="symptom"
                     className="u-full-width"
-                    onChange= {handleChange}
+                    onChange={handleChange}
                 >
                 </textarea>
                 <button
@@ -105,6 +112,11 @@ const Form = () => {
         </Fragment>
 
     );
+}
+
+
+Form.propTypes = {
+    makeCite: PropTypes.func.isRequired
 }
 
 export default Form;
